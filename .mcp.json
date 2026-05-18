@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "verity": {
+      "command": "python",
+      "args": ["-m", "verity.api.mcp_server"],
+      "env": {
+        "VERITY_ENV": "development"
+      },
+      "description": "Verity LLM confidence scoring layer — score, verify, and triage any LLM response",
+      "tools": [
+        {
+          "name": "score_response",
+          "description": "Score an LLM response for source grounding, factual consistency, claim specificity risk, and hedging calibration. Returns a full ScorecardResult with HITL recommendation."
+        },
+        {
+          "name": "extract_claims",
+          "description": "Decompose an LLM response into atomic verifiable claims with metadata."
+        },
+        {
+          "name": "get_hitl_decision",
+          "description": "Given a ScorecardResult, return the HITL decision (ACCEPT / REFINE / REJECT / ESCALATE) and an optional refinement prompt."
+        }
+      ]
+    }
+  }
+}
