@@ -5,6 +5,7 @@
 > An LLM that is confidently wrong is more dangerous than one that is obviously wrong. Verity makes the difference visible — and routable.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/jsfaulkner86/verity/actions/workflows/ci.yml/badge.svg)](https://github.com/jsfaulkner86/verity/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
 [![Status: Alpha](https://img.shields.io/badge/status-alpha-orange.svg)](#roadmap)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)

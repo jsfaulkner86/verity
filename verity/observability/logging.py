@@ -11,7 +11,7 @@ from __future__ import annotations
 import hashlib
 import logging
 import sys
-from typing import Any
+from typing import Any, cast
 
 import structlog
 
@@ -67,4 +67,5 @@ def get_logger(name: str | None = None) -> structlog.stdlib.BoundLogger:
     """Return a structlog logger. Auto-configures on first call."""
     if not structlog.is_configured():
         configure_logging()
-    return structlog.get_logger(name) if name else structlog.get_logger()
+    logger = structlog.get_logger(name) if name else structlog.get_logger()
+    return cast(structlog.stdlib.BoundLogger, logger)
