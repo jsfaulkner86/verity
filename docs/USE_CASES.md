@@ -108,25 +108,42 @@ audit_logger.record(result)  # one JSON line per scorecard
 
 ## 5. Agent self-check before tool use
 
-**Workflow.** An agent is about to take an irreversible action (email send, ticket creation, SQL write). It runs Verity on its own intended-action summary first, and branches on the verdict.
+**Workflow.** An agent has drafted its intended next action — an email send, a ticket update, a
+database write — and needs a deterministic verdict before executing an irreversible tool. It scores
+the intent via Verity and branches on the HITL decision, the natural branch point for "should I
+run this tool call?"
 
 ```python
-intent = "I will send a refund of $237.40 to customer #88421."
+from verity.core.schemas import ScoreRequest
+from verity.scoring import score_response
+
+intent = "Issue a full refund of $237.40 to customer #88421."
 
 result = score_response(ScoreRequest(
     response_text=intent,
-    sources=[order_context, refund_policy_excerpt],
+    sources=[
+        "Refund policy: full refund within 30 days of purchase.",
+        "Customer #88421: order #38291, placed 2026-05-10.",
+    ],
     source_model="gpt-4o",
     domain="financial",
 ))
 
-if result.hitl.decision.value == "ACCEPT":
-    tools.refund(customer_id=88421, amount=237.40)
-else:
-    tools.escalate_to_human(scorecard=result)
+match result.hitl.decision.value:
+    case "ACCEPT":
+        execute_refund(customer_id=88421, amount=237.40)
+    case "REFINE":
+        re_prompt_with(result.hitl.refinement_prompt)
+    case "REJECT":
+        log_and_abort(result)
+    case "ESCALATE":
+        queue_for_human_review(result)
 ```
 
-**What Verity adds.** A cheap, deterministic verdict the agent can branch on without another LLM call. Unhedged high-precision financial claims that aren't grounded in policy context route to ESCALATE — exactly the behavior you want before money moves.
+**What Verity adds.** A cheap, deterministic verdict — no second LLM call — that the agent can
+branch on before touching a side-effectful system. Unhedged high-precision claims ungrounded in
+policy context land on REJECT or ESCALATE; borderline intents arrive with a concrete re-prompt
+aimed at the weakest dimensions so the agent can self-correct before escalation.
 
 ---
 

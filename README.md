@@ -139,7 +139,7 @@ Verity is provider-agnostic. The same scoring pipeline runs against any response
 | **Web-search summarization**                            | Perplexity, Grok        | Flags claims that drift from cited URLs; routes low-grounding answers to REFINE               |
 | **Clinical Q&A / decision support**                     | any                     | ESCALATEs anything carrying PHI; tightens accept threshold; surfaces unhedged numeric claims  |
 | **Internal copilots over private docs**                 | any                     | Audit log of every accepted answer; rationale per dimension for review and drift detection    |
-| **Agent self-check before tool use**                    | any                     | Cheap, deterministic verdict the agent can branch on before taking an irreversible action     |
+| [**Agent self-check before tool use**](docs/USE_CASES.md#agent-self-check-before-tool-use) | any | Cheap, deterministic verdict the agent can branch on before taking an irreversible action |
 | **Eval pipelines and offline grading**                  | any                     | Reproducible per-dimension scores you can diff across model versions                          |
 
 Walkthroughs for each are in [`docs/USE_CASES.md`](docs/USE_CASES.md).
