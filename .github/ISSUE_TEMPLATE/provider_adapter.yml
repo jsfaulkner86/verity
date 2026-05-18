@@ -1,0 +1,57 @@
+name: Provider adapter
+description: Propose or claim a provider adapter (OpenAI, Anthropic, Perplexity, xAI/Grok, Mistral, Bedrock, Vertex, ...).
+title: "[adapter] <provider name>"
+labels: ["provider-adapter", "enhancement", "good first issue"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Adapters live in `verity/adapters/` and are intentionally thin: turn a provider response (and any retrieval context it carried) into a `ScoreRequest`, then call `score_response`.
+
+        A complete adapter PR includes:
+
+        1. The adapter module under `verity/adapters/<provider>.py`.
+        2. A short walkthrough in `docs/USE_CASES.md`.
+        3. A deterministic unit test that feeds a fixture response through the adapter into `score_response` — no network calls.
+
+  - type: input
+    id: provider
+    attributes:
+      label: Provider
+      placeholder: "OpenAI Responses API / Anthropic Messages / Perplexity Sonar / xAI Grok / ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: response_shape
+    attributes:
+      label: Response shape
+      description: What does the provider return that the adapter needs to normalize? Streaming? Tool-use blocks? Citations? Link the relevant docs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: sources
+    attributes:
+      label: Source / citation extraction
+      description: How will the adapter populate `ScoreRequest.sources`? (e.g. tool-call outputs, citation URLs, retrieved chunks.) If sources are not available, say so.
+    validations:
+      required: true
+
+  - type: textarea
+    id: testing
+    attributes:
+      label: Test fixture plan
+      description: What synthetic response will the unit test use? Confirm it contains no real PHI/PII.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: claim
+    attributes:
+      label: Coordination
+      options:
+        - label: I plan to send a PR for this adapter (claim it).
+        - label: This is a proposal only — happy for someone else to take it.
+        - label: I confirm the test fixture will contain no real PHI/PII or production data.
+          required: true

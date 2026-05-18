@@ -1,0 +1,106 @@
+name: Bug report
+description: Report unexpected behavior in scoring, the API, the MCP server, or audit logging.
+title: "[bug] <short summary>"
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Verity is post-generation middleware — the scoring pipeline is deterministic, so most bugs reproduce from a single `ScoreRequest` payload. Please include one.
+
+        **Do not paste real PHI, PII, or production prompts.** Reduce to a synthetic minimal example.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One or two sentences. What happened, and what did you expect?
+      placeholder: "score_response returned ACCEPT for a response whose sources clearly do not support the numeric claim."
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: A minimal `ScoreRequest` (JSON or Python) that reproduces the issue. Synthetic content only.
+      render: python
+      placeholder: |
+        from verity.core.schemas import ScoreRequest
+        from verity.scoring import score_response
+
+        result = score_response(ScoreRequest(
+            response_text="...",
+            sources=["..."],
+            domain="general",
+        ))
+        print(result.overall_score, result.hitl.decision)
+    validations:
+      required: true
+
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed `ScorecardResult`
+      description: The relevant fields you actually saw (overall_score, per-dimension scores, hitl.decision, phi_flagged). Trim to what matters.
+      render: json
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should the scorecard or routing have been, and why?
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Verity version / commit
+      description: Output of `pip show verity` or the commit SHA you are running.
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: "3.11.9"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      description: Where did the bug surface?
+      options:
+        - Library (`verity.scoring.score_response`)
+        - HTTP API (`/score`, `/claims`, `/hitl`)
+        - MCP server (`verity.api.mcp_server`)
+        - Audit log / observability
+        - Configuration / `.env`
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs (redacted)
+      description: Optional. Paste structured log lines if helpful. Confirm no raw PHI/PII is included.
+      render: shell
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: The reproduction contains no real PHI/PII or production data.
+          required: true
+        - label: I am on a supported Python version (3.11+).
+          required: true

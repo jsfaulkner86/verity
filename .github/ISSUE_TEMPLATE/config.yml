@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/jsfaulkner86/verity/security/advisories/new
+    about: Please report security issues privately via a GitHub Security Advisory. Do not open a public issue.
+  - name: Contributing guide
+    url: https://github.com/jsfaulkner86/verity/blob/main/CONTRIBUTING.md
+    about: Dev loop, scope guardrails, and where to start.
+  - name: Question or discussion
+    url: https://github.com/jsfaulkner86/verity/discussions
+    about: Open-ended questions, design discussion, or workflow ideas belong in Discussions.

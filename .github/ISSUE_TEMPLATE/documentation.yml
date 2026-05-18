@@ -1,0 +1,60 @@
+name: Documentation or example
+description: Suggest a docs improvement, a new walkthrough in `docs/USE_CASES.md`, or an architecture clarification.
+title: "[docs] <short summary>"
+labels: ["documentation", "good first issue"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        End-to-end walkthroughs beat API reference. Strong candidates:
+
+        - A RAG pipeline that uses Verity for accept/refine routing.
+        - An agent that self-checks with Verity before tool use.
+        - An eval pipeline that diffs scorecards across model versions.
+
+        Reference docs live under `docs/` (`ARCHITECTURE.md`, `USE_CASES.md`, `SECURITY.md`). The README's tables and Mermaid diagram are the canonical entry points.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - Fix or clarification in existing docs
+        - New walkthrough in `docs/USE_CASES.md`
+        - Architecture / diagram update
+        - README improvement
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: where
+    attributes:
+      label: Where
+      description: File path(s) and section(s) affected. If proposing a new walkthrough, name the workflow.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: A short outline of what should change or be added. If you have a draft, paste or link it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: audience
+    attributes:
+      label: Audience
+      description: Who is this for? (RAG engineer, agent author, compliance reviewer, eval owner, ...) What should they be able to do after reading?
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: Any example payloads use synthetic content — no real PHI/PII.
+          required: true

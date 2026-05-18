@@ -1,0 +1,68 @@
+name: Feature request
+description: Propose a new dimension, weight profile, HITL backend, or capability.
+title: "[feat] <short summary>"
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Verity is small on purpose. Features that sharpen its narrow focus — post-generation scoring, HITL routing, and audit — are very welcome. Features that expand scope (regeneration, retrieval, prompt-time guards) probably belong in a different layer.
+
+        Please describe the **workflow** first and the API surface second. See [CONTRIBUTING.md](../../CONTRIBUTING.md#scope-guardrails) for the scope guardrails.
+
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow / use case
+      description: Who is doing what, and what gap does this feature close? Concrete examples help.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - New scoring dimension
+        - Domain weight profile
+        - HITL queue backend
+        - Provider adapter
+        - Observability / audit
+        - API or MCP surface
+        - Eval harness
+        - Documentation / example
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Rough design. Which module would change? Any new public types? How does it stay deterministic and PHI-safe?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What else did you try or rule out, and why?
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope check
+      description: Confirm the change respects Verity's guardrails (post-generation only, provider-agnostic core, deterministic by default, stable public schemas, PHI-safe).
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: This change fits Verity's scope (post-generation scoring + HITL routing + audit).
+          required: true
