@@ -17,7 +17,9 @@ lint:
 
 format:
 	black verity/ tests/
-	typecheck:
+	ruff check --fix verity/ tests/
+
+typecheck:
 	mypy verity/
 
 run:
