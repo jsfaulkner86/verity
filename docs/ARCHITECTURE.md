@@ -2,58 +2,58 @@
 
 ## Position in the stack
 
-```
-                  user / app
-                      │
-                      ▼
-              ┌──────────────┐
-              │  upstream    │  ChatGPT / Claude / Grok / Perplexity /
-              │  LLM         │  internal model
-              └──────┬───────┘
-                     │  response (+ optional sources)
-                     ▼
-              ┌──────────────┐
-              │   Verity     │  ←─ post-generation middleware
-              │              │     scores, classifies, routes
-              └──────┬───────┘
-                     │  Scorecard + HITL decision
-                     ▼
-                consumer system
+```mermaid
+flowchart LR
+    U[User / App] --> L[Upstream LLM<br/>ChatGPT · Claude · Grok · Perplexity · internal]
+    L -->|response + optional sources| V[Verity<br/>post-generation scoring]
+    V --> S[Scorecard + HITL decision]
+    S -->|ACCEPT| C[Consumer system]
+    S -->|REFINE| L
+    S -->|REJECT| X[Drop / fallback]
+    S -->|ESCALATE| H[Human review queue]
 ```
 
-Verity is **post-generation**. It does not regenerate, retrieve, or
-guard the prompt path. Its sole job is to produce a structured,
-auditable verdict on a response that already exists.
+Verity is **post-generation** middleware. It does not regenerate, retrieve,
+or guard the prompt path. Its sole job is to produce a structured,
+auditable verdict on a response that already exists. The top-level flow
+matches the README diagram so the first-click and second-click views stay
+aligned.
 
-## Scoring pipeline
+## Inside Verity
 
+```mermaid
+flowchart LR
+    Req[ScoreRequest] --> Extract["extract_claims<br/>verity.claims.extractor"]
+    Extract --> Claims[list[Claim]]
+
+    Req --> Grounding["score_source_grounding<br/>verity.scoring.dimensions"]
+    Claims --> Factual["score_factual_consistency<br/>verity.scoring.dimensions"]
+    Req --> Factual
+    Claims --> Specificity["score_claim_specificity<br/>verity.scoring.dimensions"]
+    Claims --> Hedging["score_hedging_calibration<br/>verity.scoring.dimensions"]
+
+    Grounding --> Composite["weighted composite<br/>verity.scoring.engine"]
+    Factual --> Composite
+    Specificity --> Composite
+    Hedging --> Composite
+
+    Composite --> Decide["decide<br/>verity.hitl.router"]
+    Claims --> Decide
+    Decide --> Result[ScorecardResult]
+    Result --> Audit["audit write<br/>verity.observability.audit"]
 ```
-ScoreRequest
-    │
-    ├──► extract_claims (deterministic)         ─► list[Claim]
-    │
-    ├──► score_source_grounding(response, src) ─► DimensionScore
-    ├──► score_factual_consistency(claims, src)─► DimensionScore
-    ├──► score_claim_specificity(claims)       ─► DimensionScore
-    ├──► score_hedging_calibration(claims)     ─► DimensionScore
-    │
-    ├──► composite(weights) ──► overall_score
-    │
-    ├──► detect_phi(response)
-    │
-    └──► hitl.decide(overall, dims, claims, phi, domain)
-         │
-         ▼
-      HITLRecommendation
-         │
-         ▼
-      ScorecardResult ─► AuditLogger.record (JSONL)
-```
 
-The pipeline is pure and deterministic at v0. The four scorers are
-designed to be drop-in replaceable: any future LLM-backed scorer can
-implement the same `(...) -> DimensionScore` signature and slot in
-behind a feature flag without touching `engine.py`.
+The internal scoring path is pure and deterministic at v0. `ScoreRequest`
+enters `verity.scoring.engine.score_response`, claims are extracted by
+`verity.claims.extractor`, four dimension scorers run from
+`verity.scoring.dimensions`, the weighted composite is calculated in
+`verity.scoring.engine`, routing happens in `verity.hitl.router`, and the
+result can be written by `verity.observability.audit`.
+
+The four scorers are designed to be drop-in replaceable: any future
+LLM-backed scorer can implement the same `(...) -> DimensionScore`
+signature and slot in behind a feature flag without touching the public
+scorecard schema.
 
 ## Composite weights
 
