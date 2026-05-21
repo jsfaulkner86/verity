@@ -1,0 +1,14 @@
+# https://securitytxt.org — RFC 9116 compliant
+Contact: mailto:security@thefaulknergroupadvisors.com
+Contact: https://github.com/jsfaulkner86/verity/security/advisories/new
+Expires: 2027-05-20T00:00:00.000Z
+Preferred-Languages: en
+Policy: https://github.com/jsfaulkner86/verity/blob/main/SECURITY.md
+Canonical: https://thefaulknergroupadvisors.com/.well-known/security.txt
+Acknowledgments: https://github.com/jsfaulkner86/verity/blob/main/SECURITY.md#coordinated-disclosure-policy
+
+# Healthcare Note: Verity operates as an LLM confidence scoring layer in
+# women's health AI pipelines and may be exposed to PHI in evaluated content.
+# Suspected PHI exposure or score manipulation vulnerabilities must be reported
+# privately and treated as potential HIPAA breach events. Do NOT include
+# real patient data in any disclosure.
