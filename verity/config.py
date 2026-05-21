@@ -11,7 +11,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import Field, SecretStr, ValidationInfo, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 Env = Literal["development", "staging", "production"]
@@ -65,7 +65,7 @@ class Settings(BaseSettings):
 
     @field_validator("refine_threshold")
     @classmethod
-    def _refine_below_accept(cls, v: float, info) -> float:
+    def _refine_below_accept(cls, v: float, info: ValidationInfo) -> float:
         accept = info.data.get("accept_threshold")
         if accept is not None and v >= accept:
             raise ValueError(

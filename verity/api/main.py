@@ -13,6 +13,7 @@ structlog contextvars.
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Annotated
 
@@ -35,7 +36,7 @@ from verity.observability.logging import configure_logging, get_logger, hash_pro
 
 
 @asynccontextmanager
-async def _lifespan(app: FastAPI):
+async def _lifespan(app: FastAPI) -> AsyncIterator[None]:
     configure_logging()
     log = get_logger("verity.api")
     log.info("verity.startup", version=__version__)
