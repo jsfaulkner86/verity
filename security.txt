@@ -1,5 +1,5 @@
 # https://securitytxt.org — RFC 9116 compliant
-Contact: mailto:security@thefaulknergroupadvisors.com
+Contact: mailto:john@tfgpartner.com
 Contact: https://github.com/jsfaulkner86/verity/security/advisories/new
 Expires: 2027-05-20T00:00:00.000Z
 Preferred-Languages: en
