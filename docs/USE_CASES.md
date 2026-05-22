@@ -11,6 +11,29 @@ from verity.scoring import score_response
 
 ---
 
+## OpenAI Responses API adapter
+
+**Workflow.** Pass an already-returned OpenAI Responses object into Verity; the adapter extracts assistant text and citations without making network calls.
+
+```python
+from verity.adapters.openai import from_openai_response
+from verity.scoring import score_response
+
+openai_response = client.responses.create(
+    model="gpt-4.1-mini",
+    input="Summarize the sourced answer.",
+)
+
+request = from_openai_response(openai_response, domain="general")
+result = score_response(request)
+
+if result.hitl.decision.value == "REFINE":
+    print(result.hitl.refinement_prompt)
+```
+
+
+---
+
 ## 1. RAG answer review (ChatGPT / Claude / open-source RAG stacks)
 
 **Workflow.** You retrieve `k` chunks, ask the model to answer using only those chunks, and need to know whether it actually did.
